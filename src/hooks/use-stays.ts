@@ -84,3 +84,17 @@ export function useCreateStay() {
     },
   })
 }
+
+export function useUpdateStay() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, guestName }: { id: string; guestName: string }) => {
+      const { data } = await client.models.Stay.update({ id, guestName })
+      return data
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['stay', data?.id] })
+      queryClient.invalidateQueries({ queryKey: ['stays', data?.listingId] })
+    },
+  })
+}

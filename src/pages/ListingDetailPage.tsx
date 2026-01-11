@@ -1,12 +1,14 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { Plus, ArrowLeft } from 'lucide-react'
-import { useStays } from '@/hooks/use-stays'
+import { Plus, ArrowLeft, Pencil } from 'lucide-react'
+import { useStays, useUpdateStay } from '@/hooks/use-stays'
 import { useListings } from '@/hooks/use-listings'
 import { useCheckoutPhotos, useCheckinPhotos } from '@/hooks/use-photos'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Input } from '@/components/ui/input'
 import { formatDate } from '@/utils/date'
+import { useState } from 'react'
 
 function StayCard({
   stay,
@@ -18,6 +20,9 @@ function StayCard({
   const navigate = useNavigate()
   const { data: checkoutPhotos } = useCheckoutPhotos(stay.id)
   const { data: checkinPhotos } = useCheckinPhotos(stay.id)
+  const updateStay = useUpdateStay()
+  const [isEditing, setIsEditing] = useState(false)
+  const [guestName, setGuestName] = useState(stay.guestName || '')
 
   const rooms = (listing.rooms || []).filter((r): r is string => r !== null)
   const checkoutComplete =
@@ -26,15 +31,53 @@ function StayCard({
     rooms.length > 0 && rooms.every((room) => checkinPhotos?.some((p) => p.roomName === room))
   const allComplete = checkoutComplete && checkinComplete
 
+  const handleSave = () => {
+    updateStay.mutate({ id: stay.id, guestName })
+    setIsEditing(false)
+  }
+
   return (
     <Card
-      className={`cursor-pointer hover:shadow-md transition-shadow ${allComplete ? 'border-green-500 border-2' : ''}`}
-      onClick={() => navigate(`/stays/${stay.id}`)}
+      className={`hover:shadow-md transition-shadow ${allComplete ? 'border-green-500 border-2' : ''}`}
     >
       <CardHeader>
-        <CardTitle className="text-lg">{stay.guestName || 'Guest'}</CardTitle>
+        <div className="flex items-center justify-between">
+          {isEditing ? (
+            <div className="flex items-center gap-2 flex-1">
+              <Input
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1"
+              />
+              <Button onClick={handleSave}>Save</Button>
+              <Button variant="outline" onClick={() => setIsEditing(false)}>
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <>
+              <CardTitle
+                className="text-lg cursor-pointer flex-1"
+                onClick={() => navigate(`/stays/${stay.id}`)}
+              >
+                {stay.guestName || 'Guest'}
+              </CardTitle>
+              <Button
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsEditing(true)
+                }}
+                className="px-2 py-1"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </>
+          )}
+        </div>
       </CardHeader>
-      <CardContent>
+      <CardContent onClick={() => navigate(`/stays/${stay.id}`)} className="cursor-pointer">
         <p className="text-sm text-muted-foreground">
           {formatDate(stay.checkInDate)} - {formatDate(stay.checkOutDate)}
         </p>
@@ -123,9 +166,11 @@ export function ListingDetailPage() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {stays.map((stay) => (
-            <StayCard key={stay.id} stay={stay} listing={listing} />
-          ))}
+          {stays
+            .filter((stay) => new Date(stay.checkOutDate) < new Date())
+            .map((stay) => (
+              <StayCard key={stay.id} stay={stay} listing={listing} />
+            ))}
         </div>
       )}
     </div>
