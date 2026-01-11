@@ -82,9 +82,14 @@ export function ListingDetailPage() {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <Button variant="outline" onClick={() => navigate('/')} className="mb-4">
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back
-      </Button>
+      <div className="flex items-center justify-between mb-4">
+        <Button variant="outline" onClick={() => navigate('/')}>
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+        </Button>
+        <Button variant="outline" onClick={() => navigate(`/listings/${id}/edit`)}>
+          Edit Listing
+        </Button>
+      </div>
 
       <div className="mb-6">
         <h1 className="text-3xl font-bold">{listing.name}</h1>
@@ -92,12 +97,22 @@ export function ListingDetailPage() {
       </div>
 
       <Card
+        className="mb-4 bg-secondary text-secondary-foreground cursor-pointer hover:opacity-90"
+        onClick={() => navigate(`/listings/${id}/stays/sync`)}
+      >
+        <CardContent className="flex items-center justify-center p-6">
+          <Plus className="mr-2 h-5 w-5" />
+          <span className="font-semibold">Sync from iCal</span>
+        </CardContent>
+      </Card>
+
+      <Card
         className="mb-4 bg-primary text-primary-foreground cursor-pointer hover:opacity-90"
         onClick={() => navigate(`/listings/${id}/stays/new`)}
       >
         <CardContent className="flex items-center justify-center p-6">
           <Plus className="mr-2 h-5 w-5" />
-          <span className="font-semibold">New Stay</span>
+          <span className="font-semibold">New Stay (Manual)</span>
         </CardContent>
       </Card>
 

@@ -7,6 +7,7 @@ const schema = a.schema({
       address: a.string(),
       notes: a.string(),
       rooms: a.string().array(),
+      icalUrl: a.string(),
       stays: a.hasMany('Stay', 'listingId'),
     })
     .authorization((allow) => [allow.authenticated()]),
@@ -18,6 +19,7 @@ const schema = a.schema({
       guestName: a.string(),
       checkInDate: a.date().required(),
       checkOutDate: a.date().required(),
+      confirmationCode: a.string(),
       notes: a.string(),
       checkoutPhotos: a.hasMany('CheckoutPhoto', 'stayId'),
       checkinPhotos: a.hasMany('CheckinPhoto', 'stayId'),

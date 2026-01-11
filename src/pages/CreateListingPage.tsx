@@ -11,6 +11,7 @@ export function CreateListingPage() {
   const createListing = useCreateListing()
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
+  const [icalUrl, setIcalUrl] = useState('')
   const [rooms, setRooms] = useState<string[]>([])
   const [currentRoom, setCurrentRoom] = useState('')
 
@@ -27,7 +28,7 @@ export function CreateListingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await createListing.mutateAsync({ name, address, rooms })
+    await createListing.mutateAsync({ name, address, icalUrl, rooms })
     navigate('/')
   }
 
@@ -56,6 +57,21 @@ export function CreateListingPage() {
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="123 Ocean Dr"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Airbnb iCal URL</label>
+              <Input
+                type="url"
+                value={icalUrl}
+                onChange={(e) => setIcalUrl(e.target.value)}
+                placeholder="https://www.airbnb.com/calendar/ical/..."
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                <strong>How to get this:</strong> Open Airbnb app → Hosting → Calendar tab →
+                Settings → Availability tab → Scroll to bottom "Connect calendars" → "Connect to
+                another website" → Copy the URL
+              </p>
             </div>
 
             <div>

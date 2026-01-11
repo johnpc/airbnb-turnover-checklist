@@ -5,8 +5,10 @@ import { Skeleton } from './components/ui/skeleton'
 import { AuthPage } from './pages/AuthPage'
 import { ListingsPage } from './pages/ListingsPage'
 import { CreateListingPage } from './pages/CreateListingPage'
+import { EditListingPage } from './pages/EditListingPage'
 import { ListingDetailPage } from './pages/ListingDetailPage'
 import { CreateStayPage } from './pages/CreateStayPage'
+import { SyncStaysPage } from './pages/SyncStaysPage'
 import { CheckoutPhotosPage } from './pages/CheckoutPhotosPage'
 import { CheckinPhotosPage } from './pages/CheckinPhotosPage'
 import { StayDetailPage } from './pages/StayDetailPage'
@@ -41,6 +43,8 @@ function AppRoutes() {
         <Route path="/" element={<ListingsPage />} />
         <Route path="/listings/new" element={<CreateListingPage />} />
         <Route path="/listings/:id" element={<ListingDetailPage />} />
+        <Route path="/listings/:id/edit" element={<EditListingPage />} />
+        <Route path="/listings/:id/stays/sync" element={<SyncStaysPage />} />
         <Route path="/listings/:listingId/stays/new" element={<CreateStayPage />} />
         <Route path="/stays/:stayId/checkout-photos" element={<CheckoutPhotosPage />} />
         <Route path="/stays/:stayId/checkin-photos" element={<CheckinPhotosPage />} />
