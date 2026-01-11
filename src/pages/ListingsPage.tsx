@@ -4,6 +4,7 @@ import { useListings } from '@/hooks/use-listings'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function ListingsPage() {
   const navigate = useNavigate()
@@ -14,7 +15,28 @@ export function ListingsPage() {
     await signOut()
   }
 
-  if (isLoading) return <div className="p-4">Loading...</div>
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4 max-w-4xl">
+        <div className="flex justify-between items-center mb-6">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardHeader>
+                <Skeleton className="h-6 w-3/4" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-4 w-1/2" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { Skeleton } from './components/ui/skeleton'
 import { AuthPage } from './pages/AuthPage'
 import { ListingsPage } from './pages/ListingsPage'
 import { CreateListingPage } from './pages/CreateListingPage'
@@ -25,7 +26,7 @@ function AppRoutes() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
+        <Skeleton className="h-8 w-32" />
       </div>
     )
   }

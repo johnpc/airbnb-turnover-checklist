@@ -18,6 +18,17 @@ export function useStays(listingId: string) {
   })
 }
 
+export function useStay(stayId: string) {
+  return useQuery({
+    queryKey: ['stay', stayId],
+    queryFn: async () => {
+      const { data } = await client.models.Stay.get({ id: stayId })
+      return data
+    },
+    enabled: !!stayId,
+  })
+}
+
 export function useCreateStay() {
   const queryClient = useQueryClient()
   return useMutation({

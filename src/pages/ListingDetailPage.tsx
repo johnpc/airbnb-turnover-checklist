@@ -4,6 +4,7 @@ import { useStays } from '@/hooks/use-stays'
 import { useListings } from '@/hooks/use-listings'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { formatDate } from '@/utils/date'
 
 export function ListingDetailPage() {
@@ -15,7 +16,28 @@ export function ListingDetailPage() {
   const listing = listings?.find((l) => l.id === id)
 
   if (!listing) return <div className="p-4">Listing not found</div>
-  if (isLoading) return <div className="p-4">Loading...</div>
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4 max-w-4xl">
+        <Skeleton className="h-10 w-32 mb-6" />
+        <Skeleton className="h-8 w-64 mb-6" />
+        <div className="space-y-4">
+          {[1, 2].map((i) => (
+            <Card key={i}>
+              <CardHeader>
+                <Skeleton className="h-6 w-1/2" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-4 w-1/3 mb-2" />
+                <Skeleton className="h-10 w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
