@@ -2,10 +2,51 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Plus, ArrowLeft } from 'lucide-react'
 import { useStays } from '@/hooks/use-stays'
 import { useListings } from '@/hooks/use-listings'
+import { useCheckoutPhotos, useCheckinPhotos } from '@/hooks/use-photos'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatDate } from '@/utils/date'
+
+function StayCard({
+  stay,
+  listing,
+}: {
+  stay: { id: string; guestName: string | null; checkInDate: string; checkOutDate: string }
+  listing: { rooms: (string | null)[] | null }
+}) {
+  const navigate = useNavigate()
+  const { data: checkoutPhotos } = useCheckoutPhotos(stay.id)
+  const { data: checkinPhotos } = useCheckinPhotos(stay.id)
+
+  const rooms = (listing.rooms || []).filter((r): r is string => r !== null)
+  const checkoutComplete =
+    rooms.length > 0 && rooms.every((room) => checkoutPhotos?.some((p) => p.roomName === room))
+  const checkinComplete =
+    rooms.length > 0 && rooms.every((room) => checkinPhotos?.some((p) => p.roomName === room))
+  const allComplete = checkoutComplete && checkinComplete
+
+  return (
+    <Card
+      className={`cursor-pointer hover:shadow-md transition-shadow ${allComplete ? 'border-green-500 border-2' : ''}`}
+      onClick={() => navigate(`/stays/${stay.id}`)}
+    >
+      <CardHeader>
+        <CardTitle className="text-lg">{stay.guestName || 'Guest'}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">
+          {formatDate(stay.checkInDate)} - {formatDate(stay.checkOutDate)}
+        </p>
+        {allComplete && (
+          <p className="text-sm text-green-600 font-medium mt-2">
+            ✓ All check-in/checkout photos complete
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
 
 export function ListingDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -68,20 +109,7 @@ export function ListingDetailPage() {
       ) : (
         <div className="grid gap-4">
           {stays.map((stay) => (
-            <Card
-              key={stay.id}
-              className="cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => navigate(`/stays/${stay.id}`)}
-            >
-              <CardHeader>
-                <CardTitle className="text-lg">{stay.guestName || 'Guest'}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  {formatDate(stay.checkInDate)} - {formatDate(stay.checkOutDate)}
-                </p>
-              </CardContent>
-            </Card>
+            <StayCard key={stay.id} stay={stay} listing={listing} />
           ))}
         </div>
       )}

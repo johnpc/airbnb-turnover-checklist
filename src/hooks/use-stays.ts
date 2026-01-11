@@ -1,10 +1,32 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { client } from '@/lib/data-client'
 import type { Schema } from '../../amplify/data/resource'
+import { useEffect } from 'react'
 
 type CreateStayInput = Schema['Stay']['createType']
 
 export function useStays(listingId: string) {
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    const checkoutSub = client.models.CheckoutPhoto.observeQuery().subscribe({
+      next: () => {
+        queryClient.invalidateQueries({ queryKey: ['stays', listingId] })
+      },
+    })
+
+    const checkinSub = client.models.CheckinPhoto.observeQuery().subscribe({
+      next: () => {
+        queryClient.invalidateQueries({ queryKey: ['stays', listingId] })
+      },
+    })
+
+    return () => {
+      checkoutSub.unsubscribe()
+      checkinSub.unsubscribe()
+    }
+  }, [listingId, queryClient])
+
   return useQuery({
     queryKey: ['stays', listingId],
     queryFn: async () => {
@@ -19,6 +41,27 @@ export function useStays(listingId: string) {
 }
 
 export function useStay(stayId: string) {
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    const checkoutSub = client.models.CheckoutPhoto.observeQuery().subscribe({
+      next: () => {
+        queryClient.invalidateQueries({ queryKey: ['stay', stayId] })
+      },
+    })
+
+    const checkinSub = client.models.CheckinPhoto.observeQuery().subscribe({
+      next: () => {
+        queryClient.invalidateQueries({ queryKey: ['stay', stayId] })
+      },
+    })
+
+    return () => {
+      checkoutSub.unsubscribe()
+      checkinSub.unsubscribe()
+    }
+  }, [stayId, queryClient])
+
   return useQuery({
     queryKey: ['stay', stayId],
     queryFn: async () => {

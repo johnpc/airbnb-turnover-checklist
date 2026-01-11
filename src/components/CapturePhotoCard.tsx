@@ -57,12 +57,16 @@ export const CapturePhotoCard = forwardRef<CapturePhotoCardRef, CapturePhotoCard
           console.error('Camera access denied:', err)
         }
       }
-      initCamera()
+
+      // Only init camera if not in done state
+      if (!isDone) {
+        initCamera()
+      }
 
       return () => {
         mounted = false
       }
-    }, [])
+    }, [isDone, currentRoom])
 
     useEffect(() => {
       return () => {

@@ -60,7 +60,10 @@ export function LastPhotoCard({
           matchingPhotos?.map((p) => p.roomName)
         )
 
-        let roomPhoto = matchingPhotos?.find((p) => p.roomName === roomName)
+        // Double-check we're not using current stay photos
+        let roomPhoto = matchingPhotos
+          ?.filter((p) => p.stayId !== currentStayId)
+          .find((p) => p.roomName === roomName)
 
         // If not found, try the opposite type (but still from previous stays only)
         if (!roomPhoto) {
@@ -73,7 +76,9 @@ export function LastPhotoCard({
             `Stay ${stay.id} (other type): found ${otherPhotos?.length || 0} photos`,
             otherPhotos?.map((p) => p.roomName)
           )
-          roomPhoto = otherPhotos?.find((p) => p.roomName === roomName)
+          roomPhoto = otherPhotos
+            ?.filter((p) => p.stayId !== currentStayId)
+            .find((p) => p.roomName === roomName)
         }
 
         if (roomPhoto) {

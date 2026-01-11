@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { getPhotoUrl } from '@/utils/storage'
+import { client } from '@/lib/data-client'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Trash2 } from 'lucide-react'
 
 type Photo = {
   id: string
@@ -11,11 +13,20 @@ type Photo = {
 
 type StayPhotosCardProps = {
   photos: Photo[] | undefined
+  photoType: 'checkout' | 'checkin'
   onRetake?: (roomName: string) => void
 }
 
-export function StayPhotosCard({ photos, onRetake }: StayPhotosCardProps) {
+export function StayPhotosCard({ photos, photoType, onRetake }: StayPhotosCardProps) {
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
+
+  const handleDelete = async (photoId: string) => {
+    if (photoType === 'checkout') {
+      await client.models.CheckoutPhoto.delete({ id: photoId })
+    } else {
+      await client.models.CheckinPhoto.delete({ id: photoId })
+    }
+  }
 
   useEffect(() => {
     const loadPhotoUrls = async () => {
@@ -47,11 +58,24 @@ export function StayPhotosCard({ photos, onRetake }: StayPhotosCardProps) {
                   />
                 )}
                 <span className="font-medium flex-1">{photo.roomName}</span>
-                {onRetake && photo.roomName && (
-                  <Button variant="outline" onClick={() => onRetake(photo.roomName!)}>
-                    Retake
+                <div className="flex gap-2">
+                  {onRetake && photo.roomName && (
+                    <Button
+                      variant="outline"
+                      onClick={() => onRetake(photo.roomName!)}
+                      className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground px-3 py-1 text-xs"
+                    >
+                      Retake
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    onClick={() => handleDelete(photo.id)}
+                    className="px-3 py-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </Button>
-                )}
+                </div>
               </div>
             ))}
           </div>

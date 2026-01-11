@@ -137,7 +137,7 @@ export function CheckoutPhotosPage() {
         photoType="checkout"
       />
 
-      <StayPhotosCard photos={currentStayPhotos} onRetake={handleRetake} />
+      <StayPhotosCard photos={currentStayPhotos} photoType="checkout" onRetake={handleRetake} />
     </div>
   )
 }
