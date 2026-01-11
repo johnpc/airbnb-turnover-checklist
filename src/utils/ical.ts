@@ -48,13 +48,16 @@ export async function parseICalFeed(url: string): Promise<ICalEvent[]> {
 
   let currentEvent: Partial<ICalEvent> | null = null
   let isReservation = false
+  let currentDescription = ''
 
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
     const trimmed = line.trim()
 
     if (trimmed === 'BEGIN:VEVENT') {
       currentEvent = {}
       isReservation = false
+      currentDescription = ''
     } else if (trimmed === 'END:VEVENT' && currentEvent && isReservation) {
       if (currentEvent.checkInDate && currentEvent.checkOutDate) {
         // Convert YYYYMMDD to YYYY-MM-DD
@@ -71,6 +74,7 @@ export async function parseICalFeed(url: string): Promise<ICalEvent[]> {
         events.push(currentEvent as ICalEvent)
       }
       currentEvent = null
+      currentDescription = ''
     } else if (currentEvent) {
       if (trimmed.startsWith('DTSTART;VALUE=DATE:')) {
         currentEvent.checkInDate = trimmed.split(':')[1]
@@ -79,9 +83,14 @@ export async function parseICalFeed(url: string): Promise<ICalEvent[]> {
       } else if (trimmed === 'SUMMARY:Reserved') {
         isReservation = true
       } else if (trimmed.startsWith('DESCRIPTION:')) {
-        const description = trimmed.substring('DESCRIPTION:'.length)
-        const codeMatch = description.match(/details\/([A-Z0-9]+)/)
-        const phoneMatch = description.match(/Last 4 Digits\): (\d{4})/)
+        currentDescription = trimmed.substring('DESCRIPTION:'.length)
+        // Check for continuation lines (start with space)
+        while (i + 1 < lines.length && lines[i + 1].startsWith(' ')) {
+          i++
+          currentDescription += lines[i].substring(1)
+        }
+        const codeMatch = currentDescription.match(/details\/([A-Z0-9]+)/)
+        const phoneMatch = currentDescription.match(/Last 4 Digits\): (\d{4})/)
         currentEvent.confirmationCode = codeMatch ? codeMatch[1] : null
         currentEvent.phoneLastFour = phoneMatch ? phoneMatch[1] : null
       }
