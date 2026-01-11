@@ -33,10 +33,10 @@ export function CreateListingPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl">
+    <div className="container mx-auto p-3 sm:p-4 max-w-2xl">
       <Card>
-        <CardHeader>
-          <CardTitle>Create New Listing</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl sm:text-2xl">Create New Listing</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -82,8 +82,9 @@ export function CreateListingPage() {
                   onChange={(e) => setCurrentRoom(e.target.value)}
                   placeholder="Living Room"
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddRoom())}
+                  className="flex-1"
                 />
-                <Button type="button" onClick={handleAddRoom}>
+                <Button type="button" onClick={handleAddRoom} className="shrink-0">
                   Add
                 </Button>
               </div>
@@ -102,11 +103,16 @@ export function CreateListingPage() {
               </div>
             </div>
 
-            <div className="flex gap-2 pt-4">
-              <Button type="submit" disabled={createListing.isPending}>
+            <div className="flex flex-col sm:flex-row gap-2 pt-4">
+              <Button type="submit" disabled={createListing.isPending} className="w-full sm:w-auto">
                 {createListing.isPending ? 'Creating...' : 'Create Listing'}
               </Button>
-              <Button type="button" variant="outline" onClick={() => navigate('/')}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate('/')}
+                className="w-full sm:w-auto"
+              >
                 Cancel
               </Button>
             </div>

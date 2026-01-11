@@ -124,48 +124,54 @@ export function ListingDetailPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <div className="flex items-center justify-between mb-4">
-        <Button variant="outline" onClick={() => navigate('/')}>
+    <div className="container mx-auto p-3 sm:p-4 max-w-4xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 sm:mb-4">
+        <Button variant="outline" onClick={() => navigate('/')} className="w-full sm:w-auto">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
-        <Button variant="outline" onClick={() => navigate(`/listings/${id}/edit`)}>
+        <Button
+          variant="outline"
+          onClick={() => navigate(`/listings/${id}/edit`)}
+          className="w-full sm:w-auto"
+        >
           Edit Listing
         </Button>
       </div>
 
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">{listing.name}</h1>
-        {listing.address && <p className="text-muted-foreground">{listing.address}</p>}
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold">{listing.name}</h1>
+        {listing.address && (
+          <p className="text-sm sm:text-base text-muted-foreground">{listing.address}</p>
+        )}
       </div>
 
       <Card
-        className="mb-4 bg-secondary text-secondary-foreground cursor-pointer hover:opacity-90"
+        className="mb-3 sm:mb-4 bg-secondary text-secondary-foreground cursor-pointer hover:opacity-90"
         onClick={() => navigate(`/listings/${id}/stays/sync`)}
       >
-        <CardContent className="flex items-center justify-center p-6">
+        <CardContent className="flex items-center justify-center p-4 sm:p-6">
           <Plus className="mr-2 h-5 w-5" />
-          <span className="font-semibold">Sync from iCal</span>
+          <span className="text-sm sm:text-base font-semibold">Sync from iCal</span>
         </CardContent>
       </Card>
 
       <Card
-        className="mb-4 bg-primary text-primary-foreground cursor-pointer hover:opacity-90"
+        className="mb-3 sm:mb-4 bg-primary text-primary-foreground cursor-pointer hover:opacity-90"
         onClick={() => navigate(`/listings/${id}/stays/new`)}
       >
-        <CardContent className="flex items-center justify-center p-6">
+        <CardContent className="flex items-center justify-center p-4 sm:p-6">
           <Plus className="mr-2 h-5 w-5" />
-          <span className="font-semibold">New Stay (Manual)</span>
+          <span className="text-sm sm:text-base font-semibold">New Stay (Manual)</span>
         </CardContent>
       </Card>
 
-      <h2 className="text-xl font-semibold mb-4">Past Stays</h2>
+      <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Past Stays</h2>
       {!stays || stays.length === 0 ? (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground">No stays yet</p>
+        <Card className="p-6 sm:p-8 text-center">
+          <p className="text-sm sm:text-base text-muted-foreground">No stays yet</p>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3 sm:gap-4">
           {stays
             .filter((stay) => new Date(stay.checkOutDate) < new Date())
             .map((stay) => (

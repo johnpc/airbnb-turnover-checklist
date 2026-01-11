@@ -136,16 +136,20 @@ export function SyncStaysPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl">
-      <Button variant="outline" onClick={() => navigate(`/listings/${id}`)} className="mb-4">
+    <div className="container mx-auto p-3 sm:p-4 max-w-2xl">
+      <Button
+        variant="outline"
+        onClick={() => navigate(`/listings/${id}`)}
+        className="mb-3 sm:mb-4 w-full sm:w-auto"
+      >
         <ArrowLeft className="mr-2 h-4 w-4" /> Back
       </Button>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Sync Stays from iCal</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg sm:text-xl">Sync Stays from iCal</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4">
           <p className="text-sm text-muted-foreground">
             This will import reservations from your Airbnb calendar. Existing stays with matching
             confirmation codes will be skipped.
@@ -157,7 +161,7 @@ export function SyncStaysPage() {
 
           {syncResult && (
             <div
-              className={`p-4 border rounded-md ${syncResult.errors.length > 0 ? 'bg-yellow-50 border-yellow-200' : 'bg-green-50 border-green-200'}`}
+              className={`p-3 sm:p-4 border rounded-md ${syncResult.errors.length > 0 ? 'bg-yellow-50 border-yellow-200' : 'bg-green-50 border-green-200'}`}
             >
               <p
                 className={`text-sm font-medium ${syncResult.errors.length > 0 ? 'text-yellow-800' : 'text-green-800'}`}
@@ -182,7 +186,7 @@ export function SyncStaysPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate(`/listings/${id}`)}
-                className="mt-2"
+                className="mt-2 w-full sm:w-auto"
               >
                 View Stays
               </Button>

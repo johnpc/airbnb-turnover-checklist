@@ -41,27 +41,27 @@ export function StayDetailPage() {
   const hasCheckinPhotos = checkinPhotos && checkinPhotos.length > 0
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container mx-auto p-3 sm:p-4 max-w-4xl">
       <Button
         variant="outline"
         onClick={() => navigate(`/listings/${listing.id}`)}
-        className="mb-4"
+        className="mb-3 sm:mb-4"
       >
         <ArrowLeft className="mr-2 h-4 w-4" /> Back
       </Button>
 
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Guest: {stay.guestName || 'Unknown'}</h1>
-        <p className="text-muted-foreground">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold">Guest: {stay.guestName || 'Unknown'}</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           {formatDate(stay.checkInDate)} - {formatDate(stay.checkOutDate)}
         </p>
         <p className="text-sm text-muted-foreground">{listing.name}</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
         <Card className={hasCheckoutPhotos ? 'border-green-500 border-2' : ''}>
-          <CardHeader>
-            <CardTitle>Checkout Photos</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg sm:text-xl">Checkout Photos</CardTitle>
           </CardHeader>
           <CardContent>
             {hasCheckoutPhotos ? (
@@ -69,7 +69,7 @@ export function StayDetailPage() {
                 <p className="text-sm text-green-600 font-medium mb-2">✓ All photos complete</p>
                 <Button
                   variant="default"
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                  className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full sm:w-auto"
                   onClick={() => navigate(`/stays/${id}/checkout-photos`)}
                 >
                   View {checkoutPhotos.length} Photos
@@ -78,7 +78,10 @@ export function StayDetailPage() {
             ) : (
               <div>
                 <p className="text-sm text-muted-foreground mb-2">No photos yet</p>
-                <Button onClick={() => navigate(`/stays/${id}/checkout-photos`)}>
+                <Button
+                  onClick={() => navigate(`/stays/${id}/checkout-photos`)}
+                  className="w-full sm:w-auto"
+                >
                   Take Checkout Photos
                 </Button>
               </div>
@@ -87,8 +90,8 @@ export function StayDetailPage() {
         </Card>
 
         <Card className={hasCheckinPhotos ? 'border-green-500 border-2' : ''}>
-          <CardHeader>
-            <CardTitle>Check-in Photos</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg sm:text-xl">Check-in Photos</CardTitle>
           </CardHeader>
           <CardContent>
             {hasCheckinPhotos ? (
@@ -96,7 +99,7 @@ export function StayDetailPage() {
                 <p className="text-sm text-green-600 font-medium mb-2">✓ All photos complete</p>
                 <Button
                   variant="default"
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                  className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full sm:w-auto"
                   onClick={() => navigate(`/stays/${id}/checkin-photos`)}
                 >
                   View {checkinPhotos.length} Photos
@@ -105,7 +108,10 @@ export function StayDetailPage() {
             ) : (
               <div>
                 <p className="text-sm text-muted-foreground mb-2">No photos yet</p>
-                <Button onClick={() => navigate(`/stays/${id}/checkin-photos`)}>
+                <Button
+                  onClick={() => navigate(`/stays/${id}/checkin-photos`)}
+                  className="w-full sm:w-auto"
+                >
                   Take Check-in Photos
                 </Button>
               </div>

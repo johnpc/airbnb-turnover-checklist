@@ -78,19 +78,21 @@ export const CapturePhotoCard = forwardRef<CapturePhotoCardRef, CapturePhotoCard
 
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>{listingName}</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg sm:text-xl">{listingName}</CardTitle>
           {!isDone && (
             <p className="text-sm text-muted-foreground">
               Room {currentRoomIndex + 1} of {totalRooms}: {currentRoom}
             </p>
           )}
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4">
           {isDone ? (
-            <div className="text-center py-8">
-              <h2 className="text-2xl font-bold mb-2">🎉 Congrats! You're Done!</h2>
-              <p className="text-muted-foreground mb-6">All photos have been captured</p>
+            <div className="text-center py-6 sm:py-8">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2">🎉 Congrats! You're Done!</h2>
+              <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
+                All photos have been captured
+              </p>
               <Button onClick={onCancel} className="w-full">
                 Back to Stay Overview
               </Button>
@@ -102,7 +104,7 @@ export const CapturePhotoCard = forwardRef<CapturePhotoCardRef, CapturePhotoCard
                 <canvas ref={canvasRef} className="hidden" />
               </div>
 
-              <Button onClick={onCapture} disabled={isUploading} className="w-full py-6">
+              <Button onClick={onCapture} disabled={isUploading} className="w-full py-4 sm:py-6">
                 <Camera className="mr-2 h-5 w-5" />
                 {isUploading ? 'Uploading...' : 'Capture Photo'}
               </Button>
