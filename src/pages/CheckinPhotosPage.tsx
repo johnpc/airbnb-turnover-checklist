@@ -10,12 +10,13 @@ import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { CapturePhotoCard, type CapturePhotoCardRef } from '@/components/CapturePhotoCard'
 import { LastPhotoCard } from '@/components/LastPhotoCard'
 import { StayPhotosCard } from '@/components/StayPhotosCard'
+import { NotFound } from '@/components/NotFound'
 
 export function CheckinPhotosPage() {
   const { stayId } = useParams<{ stayId: string }>()
   const navigate = useNavigate()
-  const { data: stay } = useStay(stayId!)
-  const { data: listings } = useListings()
+  const { data: stay, isLoading: stayLoading } = useStay(stayId!)
+  const { data: listings, isLoading: listingsLoading } = useListings()
   const { data: currentStayPhotos } = useCheckinPhotos(stayId!)
   const createPhoto = useCreateCheckinPhoto()
   const captureCardRef = useRef<CapturePhotoCardRef>(null)
@@ -99,7 +100,7 @@ export function CheckinPhotosPage() {
     }
   }
 
-  if (!stay || !listing) {
+  if (stayLoading || listingsLoading) {
     return (
       <div className="container mx-auto p-4 max-w-2xl">
         <Skeleton className="h-8 w-64 mb-4" />
@@ -114,6 +115,16 @@ export function CheckinPhotosPage() {
         </Card>
       </div>
     )
+  }
+
+  if (!stay) {
+    return (
+      <NotFound title="Stay Not Found" message="This stay doesn't exist or has been deleted." />
+    )
+  }
+
+  if (!listing) {
+    return <NotFound title="Listing Not Found" message="The listing for this stay doesn't exist." />
   }
 
   return (
