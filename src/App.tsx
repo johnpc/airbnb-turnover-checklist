@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { Skeleton } from './components/ui/skeleton'
+import { Header } from './components/Header'
 import { AuthPage } from './pages/AuthPage'
 import { ListingsPage } from './pages/ListingsPage'
 import { CreateListingPage } from './pages/CreateListingPage'
@@ -39,6 +40,7 @@ function AppRoutes() {
 
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={<ListingsPage />} />
         <Route path="/listings/new" element={<CreateListingPage />} />
