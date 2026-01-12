@@ -7,18 +7,19 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatDate } from '@/utils/date'
+import { NotFound } from '@/components/NotFound'
 
 export function StayDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: stay } = useStay(id!)
-  const { data: listings } = useListings()
+  const { data: stay, isLoading: stayLoading } = useStay(id!)
+  const { data: listings, isLoading: listingsLoading } = useListings()
   const { data: checkoutPhotos } = useCheckoutPhotos(id!)
   const { data: checkinPhotos } = useCheckinPhotos(id!)
 
   const listing = listings?.find((l) => l.id === stay?.listingId)
 
-  if (!stay || !listing) {
+  if (stayLoading || listingsLoading) {
     return (
       <div className="container mx-auto p-4 max-w-4xl">
         <Skeleton className="h-10 w-32 mb-6" />
@@ -35,6 +36,16 @@ export function StayDetailPage() {
         </div>
       </div>
     )
+  }
+
+  if (!stay) {
+    return (
+      <NotFound title="Stay Not Found" message="This stay doesn't exist or has been deleted." />
+    )
+  }
+
+  if (!listing) {
+    return <NotFound title="Listing Not Found" message="The listing for this stay doesn't exist." />
   }
 
   const rooms = (listing.rooms || []).filter((r): r is string => r !== null)
