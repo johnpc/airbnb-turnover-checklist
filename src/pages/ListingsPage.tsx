@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import { Plus, Home, LogOut } from 'lucide-react'
+import { Plus, Home } from 'lucide-react'
 import { useListings } from '@/hooks/use-listings'
-import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -9,11 +8,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 export function ListingsPage() {
   const navigate = useNavigate()
   const { data: listings, isLoading } = useListings()
-  const { signOut } = useAuth()
-
-  const handleSignOut = async () => {
-    await signOut()
-  }
 
   if (isLoading) {
     return (
@@ -42,14 +36,9 @@ export function ListingsPage() {
     <div className="container mx-auto p-3 sm:p-4 max-w-4xl">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 sm:mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold">My Listings</h1>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Button onClick={() => navigate('/listings/new')} className="flex-1 sm:flex-none">
-            <Plus className="mr-2 h-4 w-4" /> New Listing
-          </Button>
-          <Button variant="outline" onClick={handleSignOut} className="flex-1 sm:flex-none">
-            <LogOut className="mr-2 h-4 w-4" /> Sign Out
-          </Button>
-        </div>
+        <Button onClick={() => navigate('/listings/new')} className="w-full sm:w-auto">
+          <Plus className="mr-2 h-4 w-4" /> New Listing
+        </Button>
       </div>
 
       {!listings || listings.length === 0 ? (
