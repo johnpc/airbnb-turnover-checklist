@@ -43,9 +43,14 @@ export function Header() {
 
   const handleDeleteAccount = async () => {
     if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-      // TODO: Implement account deletion
-      alert('Account deletion will be implemented soon')
-      setShowSidebar(false)
+      try {
+        const { deleteUser } = await import('aws-amplify/auth')
+        await deleteUser()
+        alert('Account deleted successfully')
+        setShowSidebar(false)
+      } catch (error) {
+        alert(error instanceof Error ? error.message : 'Failed to delete account')
+      }
     }
   }
 
