@@ -3,9 +3,14 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from './ui/button'
+import { Input } from './ui/input'
 
 export function Header() {
   const [showSidebar, setShowSidebar] = useState(false)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [isChanging, setIsChanging] = useState(false)
   const navigate = useNavigate()
   const { signOut, user } = useAuth()
 
@@ -15,9 +20,25 @@ export function Header() {
   }
 
   const handleChangePassword = () => {
-    // TODO: Implement change password
-    alert('Change password functionality will be implemented soon')
     setShowSidebar(false)
+    setShowPasswordModal(true)
+  }
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsChanging(true)
+    try {
+      const { updatePassword } = await import('aws-amplify/auth')
+      await updatePassword({ oldPassword, newPassword })
+      alert('Password changed successfully!')
+      setShowPasswordModal(false)
+      setOldPassword('')
+      setNewPassword('')
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to change password')
+    } finally {
+      setIsChanging(false)
+    }
   }
 
   const handleDeleteAccount = async () => {
@@ -55,7 +76,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* Overlay */}
+      {/* Sidebar Overlay */}
       {showSidebar && (
         <div
           className="fixed inset-0 bg-black/50 z-40 transition-opacity"
@@ -108,6 +129,66 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      {/* Password Change Modal */}
+      {showPasswordModal && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setShowPasswordModal(false)}
+          />
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Change Password</h2>
+                <button
+                  onClick={() => setShowPasswordModal(false)}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Current Password</label>
+                  <Input
+                    type="password"
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">New Password</label>
+                  <Input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    minLength={8}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Must be at least 8 characters
+                  </p>
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <Button type="submit" disabled={isChanging} className="flex-1">
+                    {isChanging ? 'Changing...' : 'Change Password'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowPasswordModal(false)}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </>
+      )}
     </>
   )
 }
