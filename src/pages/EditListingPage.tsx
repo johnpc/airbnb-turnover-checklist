@@ -5,11 +5,12 @@ import { useListings } from '@/hooks/use-listings'
 import { client } from '@/lib/data-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function EditListingPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: listings } = useListings()
+  const { data: listings, isLoading } = useListings()
   const listing = listings?.find((l) => l.id === id)
 
   const [name, setName] = useState(listing?.name || '')
@@ -40,6 +41,26 @@ export function EditListingPage() {
     } finally {
       setIsSaving(false)
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4 max-w-2xl">
+        <Skeleton className="h-10 w-32 mb-4" />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   if (!listing) return <div className="p-4">Listing not found</div>

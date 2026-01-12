@@ -94,17 +94,15 @@ function StayCard({
 export function ListingDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: listings } = useListings()
-  const { data: stays, isLoading } = useStays(id!)
+  const { data: listings, isLoading: listingsLoading } = useListings()
+  const { data: stays, isLoading: staysLoading } = useStays(id!)
 
   const listing = listings?.find((l) => l.id === id)
 
-  if (!listing) return <div className="p-4">Listing not found</div>
-
-  if (isLoading) {
+  if (listingsLoading || staysLoading) {
     return (
-      <div className="container mx-auto p-4 max-w-4xl">
-        <Skeleton className="h-10 w-32 mb-6" />
+      <div className="container mx-auto p-3 sm:p-4 max-w-4xl">
+        <Skeleton className="h-10 w-32 mb-4" />
         <Skeleton className="h-8 w-64 mb-6" />
         <div className="space-y-4">
           {[1, 2].map((i) => (
@@ -122,6 +120,8 @@ export function ListingDetailPage() {
       </div>
     )
   }
+
+  if (!listing) return <div className="p-4">Listing not found</div>
 
   return (
     <div className="container mx-auto p-3 sm:p-4 max-w-4xl">
