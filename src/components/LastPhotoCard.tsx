@@ -2,12 +2,22 @@ import { useEffect, useState } from 'react'
 import { useStays } from '@/hooks/use-stays'
 import { client } from '@/lib/data-client'
 import { getPhotoUrl } from '@/utils/storage'
+import { formatDate } from '@/utils/date'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 
 type LastPhotoCardProps = {
   currentStayId: string
   listingId: string
   roomName: string
+  photoType: 'checkout' | 'checkin'
+}
+
+type PhotoInfo = {
+  url: string
+  guestName: string | null
+  checkInDate: string
+  checkOutDate: string
+  createdAt: string
   photoType: 'checkout' | 'checkin'
 }
 
@@ -18,7 +28,7 @@ export function LastPhotoCard({
   photoType,
 }: LastPhotoCardProps) {
   const { data: allStays } = useStays(listingId)
-  const [lastPhotoUrl, setLastPhotoUrl] = useState<string | null>(null)
+  const [photoInfo, setPhotoInfo] = useState<PhotoInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   console.log('LastPhotoCard props:', { currentStayId, listingId, roomName, photoType })
@@ -64,6 +74,7 @@ export function LastPhotoCard({
         let roomPhoto = matchingPhotos
           ?.filter((p) => p.stayId !== currentStayId)
           .find((p) => p.roomName === roomName)
+        let foundPhotoType: 'checkout' | 'checkin' = photoType
 
         // If not found, try the opposite type (but still from previous stays only)
         if (!roomPhoto) {
@@ -79,6 +90,7 @@ export function LastPhotoCard({
           roomPhoto = otherPhotos
             ?.filter((p) => p.stayId !== currentStayId)
             .find((p) => p.roomName === roomName)
+          foundPhotoType = photoType === 'checkout' ? 'checkin' : 'checkout'
         }
 
         if (roomPhoto) {
@@ -87,12 +99,19 @@ export function LastPhotoCard({
           try {
             const url = await getPhotoUrl(roomPhoto.s3Key)
             console.log('Generated URL:', url)
-            setLastPhotoUrl(url)
+            setPhotoInfo({
+              url,
+              guestName: stay.guestName,
+              checkInDate: stay.checkInDate,
+              checkOutDate: stay.checkOutDate,
+              createdAt: roomPhoto.createdAt,
+              photoType: foundPhotoType,
+            })
             setIsLoading(false)
             return
           } catch (error) {
             console.error('Error getting photo URL:', error)
-            setLastPhotoUrl(null)
+            setPhotoInfo(null)
             setIsLoading(false)
             return
           }
@@ -100,7 +119,7 @@ export function LastPhotoCard({
       }
 
       console.log('No photo found for room in previous stays:', roomName)
-      setLastPhotoUrl(null)
+      setPhotoInfo(null)
       setIsLoading(false)
     }
 
@@ -109,14 +128,30 @@ export function LastPhotoCard({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">Last Photo of {roomName}</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg sm:text-xl">Last Photo of {roomName}</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <p className="text-sm text-muted-foreground text-center py-8">Loading...</p>
-        ) : lastPhotoUrl ? (
-          <img src={lastPhotoUrl} alt={`Last photo of ${roomName}`} className="w-full rounded-lg" />
+        ) : photoInfo ? (
+          <div className="space-y-3">
+            <img
+              src={photoInfo.url}
+              alt={`Last photo of ${roomName}`}
+              className="w-full rounded-lg"
+            />
+            <div className="text-sm space-y-1">
+              <p className="font-medium">Guest: {photoInfo.guestName || 'Unknown'}</p>
+              <p className="text-muted-foreground">
+                Stay: {formatDate(photoInfo.checkInDate)} - {formatDate(photoInfo.checkOutDate)}
+              </p>
+              <p className="text-muted-foreground">
+                Photo taken: {new Date(photoInfo.createdAt).toLocaleDateString()} (
+                {photoInfo.photoType})
+              </p>
+            </div>
+          </div>
         ) : (
           <p className="text-sm text-muted-foreground text-center py-8">
             This is your first time taking a photo of {roomName}
