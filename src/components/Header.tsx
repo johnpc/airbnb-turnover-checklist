@@ -1,4 +1,4 @@
-import { Camera, Settings, Home, LogOut, Trash2, X } from 'lucide-react'
+import { Camera, Settings, Home, LogOut, Trash2, X, Key } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
@@ -11,6 +11,12 @@ export function Header() {
 
   const handleSignOut = async () => {
     await signOut()
+    setShowSidebar(false)
+  }
+
+  const handleChangePassword = () => {
+    // TODO: Implement change password
+    alert('Change password functionality will be implemented soon')
     setShowSidebar(false)
   }
 
@@ -77,6 +83,13 @@ export function Header() {
             >
               <Home className="h-5 w-5" />
               <span>Home</span>
+            </button>
+            <button
+              onClick={handleChangePassword}
+              className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3"
+            >
+              <Key className="h-5 w-5" />
+              <span>Change Password</span>
             </button>
             <button
               onClick={handleSignOut}
