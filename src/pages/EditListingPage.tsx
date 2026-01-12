@@ -6,6 +6,7 @@ import { client } from '@/lib/data-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { NotFound } from '@/components/NotFound'
 
 export function EditListingPage() {
   const { id } = useParams<{ id: string }>()
@@ -63,7 +64,13 @@ export function EditListingPage() {
     )
   }
 
-  if (!listing) return <div className="p-4">Listing not found</div>
+  if (!listing)
+    return (
+      <NotFound
+        title="Listing Not Found"
+        message="This listing doesn't exist or has been deleted."
+      />
+    )
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">

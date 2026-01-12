@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
 import { formatDate } from '@/utils/date'
 import { useState } from 'react'
+import { NotFound } from '@/components/NotFound'
 
 function StayCard({
   stay,
@@ -121,7 +122,13 @@ export function ListingDetailPage() {
     )
   }
 
-  if (!listing) return <div className="p-4">Listing not found</div>
+  if (!listing)
+    return (
+      <NotFound
+        title="Listing Not Found"
+        message="This listing doesn't exist or has been deleted."
+      />
+    )
 
   return (
     <div className="container mx-auto p-3 sm:p-4 max-w-4xl">

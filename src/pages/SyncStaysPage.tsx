@@ -8,6 +8,7 @@ import { parseICalFeed } from '@/utils/ical'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { NotFound } from '@/components/NotFound'
 
 export function SyncStaysPage() {
   const { id } = useParams<{ id: string }>()
@@ -112,7 +113,13 @@ export function SyncStaysPage() {
     )
   }
 
-  if (!listing) return <div className="p-4">Listing not found</div>
+  if (!listing)
+    return (
+      <NotFound
+        title="Listing Not Found"
+        message="This listing doesn't exist or has been deleted."
+      />
+    )
 
   if (!listing.icalUrl) {
     return (
