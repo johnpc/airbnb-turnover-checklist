@@ -37,8 +37,11 @@ export function StayDetailPage() {
     )
   }
 
-  const hasCheckoutPhotos = checkoutPhotos && checkoutPhotos.length > 0
-  const hasCheckinPhotos = checkinPhotos && checkinPhotos.length > 0
+  const rooms = (listing.rooms || []).filter((r): r is string => r !== null)
+  const checkoutComplete =
+    rooms.length > 0 && rooms.every((room) => checkoutPhotos?.some((p) => p.roomName === room))
+  const checkinComplete =
+    rooms.length > 0 && rooms.every((room) => checkinPhotos?.some((p) => p.roomName === room))
 
   return (
     <div className="container mx-auto p-3 sm:p-4 max-w-4xl">
@@ -59,12 +62,12 @@ export function StayDetailPage() {
       </div>
 
       <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-        <Card className={hasCheckoutPhotos ? 'border-green-500 border-2' : ''}>
+        <Card className={checkoutComplete ? 'border-green-500 border-2' : ''}>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg sm:text-xl">Checkout Photos</CardTitle>
           </CardHeader>
           <CardContent>
-            {hasCheckoutPhotos ? (
+            {checkoutComplete ? (
               <div>
                 <p className="text-sm text-green-600 font-medium mb-2">✓ All photos complete</p>
                 <Button
@@ -72,12 +75,16 @@ export function StayDetailPage() {
                   className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full sm:w-auto"
                   onClick={() => navigate(`/stays/${id}/checkout-photos`)}
                 >
-                  View {checkoutPhotos.length} Photos
+                  View {checkoutPhotos?.length || 0} Photos
                 </Button>
               </div>
             ) : (
               <div>
-                <p className="text-sm text-muted-foreground mb-2">No photos yet</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {checkoutPhotos && checkoutPhotos.length > 0
+                    ? `${checkoutPhotos.length} of ${rooms.length} rooms`
+                    : 'No photos yet'}
+                </p>
                 <Button
                   onClick={() => navigate(`/stays/${id}/checkout-photos`)}
                   className="w-full sm:w-auto"
@@ -89,12 +96,12 @@ export function StayDetailPage() {
           </CardContent>
         </Card>
 
-        <Card className={hasCheckinPhotos ? 'border-green-500 border-2' : ''}>
+        <Card className={checkinComplete ? 'border-green-500 border-2' : ''}>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg sm:text-xl">Check-in Photos</CardTitle>
           </CardHeader>
           <CardContent>
-            {hasCheckinPhotos ? (
+            {checkinComplete ? (
               <div>
                 <p className="text-sm text-green-600 font-medium mb-2">✓ All photos complete</p>
                 <Button
@@ -102,12 +109,16 @@ export function StayDetailPage() {
                   className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full sm:w-auto"
                   onClick={() => navigate(`/stays/${id}/checkin-photos`)}
                 >
-                  View {checkinPhotos.length} Photos
+                  View {checkinPhotos?.length || 0} Photos
                 </Button>
               </div>
             ) : (
               <div>
-                <p className="text-sm text-muted-foreground mb-2">No photos yet</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {checkinPhotos && checkinPhotos.length > 0
+                    ? `${checkinPhotos.length} of ${rooms.length} rooms`
+                    : 'No photos yet'}
+                </p>
                 <Button
                   onClick={() => navigate(`/stays/${id}/checkin-photos`)}
                   className="w-full sm:w-auto"
