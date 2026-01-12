@@ -9,6 +9,7 @@ type Photo = {
   id: string
   roomName: string | null
   s3Key: string
+  createdAt: string
 }
 
 type StayPhotosCardProps = {
@@ -57,7 +58,12 @@ export function StayPhotosCard({ photos, photoType, onRetake }: StayPhotosCardPr
                     className="w-16 h-16 object-cover rounded"
                   />
                 )}
-                <span className="font-medium flex-1">{photo.roomName}</span>
+                <div className="flex-1">
+                  <p className="font-medium">{photo.roomName}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(photo.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
                 <div className="flex gap-2">
                   {onRetake && photo.roomName && (
                     <Button
